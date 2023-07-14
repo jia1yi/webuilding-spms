@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webuilding.mapper.VisitorInfoMapper">
+
+    <!-- 预约客户信息映射结果 -->
+    <resultMap id="VisitorInfoResult" type="com.webuilding.entity.VisitorInfo">
+        <id column="id" property="id" />
+        <result column="visitorId" property="visitorId" />
+        <result column="IDType" property="IDType" /><!--访客证件类型，默认身份证（1身份证）-->
+        <result column="name" property="name" /><!--访客姓名-->
+        <result column="gender" property="gender" /><!--访客性别（1 男，2 女）-->
+        <result column="race" property="race" /><!--访客民族-->
+        <result column="birthday" property="birthday" /><!--访客生日-->
+        <result column="census_addr" property="census_addr" /><!--访客地址-->
+        <result column="iden_number" property="iden_number" /><!--访客证件号码-->
+        <result column="police" property="police" /><!--访客发证机关-->
+        <result column="active_from" property="active_from" /><!--访客证件有效起始时间-->
+        <result column="active_to" property="active_to" /><!--访客证件有效结束时间-->
+        <result column="card_id" property="card_id" /><!--访客证件卡号-->
+        <result column="head_img_name" property="head_img_name" /><!--访客证件头像-->
+        <result column="visitorTelephone" property="visitorTelephone" /><!--访客电话号码-->
+        <result column="visitorWxId" property="visitorWxId" /><!--访客微信id-->
+    </resultMap>
+
+    <sql id="selectVisitorInfoVo">
+        select id,visitorId,IDType,name,gender,race,birthday,census_addr,iden_number,police,active_from,active_to,card_id,head_img_name,visitorTelephone,visitorWxId
+		from visitor_info
+    </sql>
+
+    <select id="selectVisitorInfoList" parameterType="VisitorInfo" resultMap="VisitorInfoResult">
+        <include refid="selectVisitorInfoVo"/>
+        <where>
+            <if test="visitorId != null and visitorId != ''"> AND visitorId = #{visitorId}</if>
+            <if test="visitorTelephone != null and visitorTelephone != ''"> AND visitorTelephone = #{visitorTelephone}</if>
+            <if test="visitorWxId != null and visitorWxId != ''"> AND visitorWxId = #{visitorWxId}</if>
+        </where>
+    </select>
+
+    <insert id="insertVisitorInfo" parameterType="VisitorInfo">
+        insert into visitor_info(visitorId,IDType,name,gender,race,birthday,census_addr,iden_number,police,active_from,active_to,
+                                card_id,head_img_name,visitorTelephone,visitorWxId)
+
+        values(#{visitorId},#{IDType},#{name},#{gender},#{race},#{birthday},#{census_addr},#{iden_number},
+                #{police},#{active_from},#{active_to},#{card_id},#{head_img_name},#{visitorTelephone},#{visitorWxId})
+    </insert>
+
+    <insert id="insertBatchVisitorInfo">
+        insert into visitor_info(visitorId,IDType,name,gender,race,birthday,census_addr,iden_number,police,active_from,active_to,
+                                card_id,head_img_name,visitorTelephone,visitorWxId)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.visitorId},#{item.IDType},#{item.name},#{item.gender},#{item.race},#{item.birthday},#{item.census_addr},#{item.iden_number},
+            #{item.police},#{item.active_from},#{item.active_to},#{item.card_id},#{item.head_img_name},#{item.visitorTelephone},#{item.visitorWxId})
+        </foreach>
+    </insert>
+
+    <update id="updateVisitorInfo" parameterType="VisitorInfo">
+        update visitor_info
+        <set>
+            <if test="IDType != null and IDType != ''">IDType = #{IDType},</if><!--访客证件类型，默认身份证（1身份证）-->
+            <if test="name != null and name != ''">name = #{name},</if><!--访客姓名-->
+            <if test="gender != null and gender != ''">gender = #{gender},</if><!--访客性别（1 男，2 女）-->
+            <if test="race != null and race != ''">race = #{race},</if><!--访客民族-->
+            <if test="birthday != null and birthday != ''">birthday = #{birthday},</if><!--访客生日-->
+            <if test="census_addr != null and census_addr != ''">census_addr = #{census_addr},</if><!--访客地址-->
+            <if test="iden_number != null and iden_number != ''">iden_number = #{iden_number},</if><!--访客证件号码-->
+            <if test="police != null and police != ''">police = #{police},</if><!--访客发证机关-->
+            <if test="active_from != null and active_from != ''">active_from = #{active_from},</if><!--访客证件有效起始时间-->
+            <if test="active_to != null and active_to != ''">active_to = #{active_to},</if><!--访客证件有效结束时间-->
+            <if test="card_id != null and card_id != ''">card_id = #{card_id},</if><!--访客证件卡号-->
+            <if test="head_img_name != null and head_img_name != ''">head_img_name = #{head_img_name},</if><!--访客证件头像-->
+            <if test="visitorTelephone != null and visitorTelephone != ''">visitorTelephone = #{visitorTelephone},</if><!--访客电话号码-->
+            <if test="visitorWxId != null and visitorWxId != ''">visitorWxId = #{visitorWxId},</if><!--访客微信id-->
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

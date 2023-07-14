@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webuilding.mapper.VisitorBookMapper">
+
+    <!-- 预约登记映射结果 -->
+    <resultMap id="VisitorBookResult" type="com.webuilding.entity.VisitorBook">
+        <id column="id" property="id" />
+        <result column="visitorId" property="visitorId" />
+        <result column="visitDepartCode" property="visitDepartCode" /><!--拜访组织机构 code-->
+        <result column="visitDepartName" property="visitDepartName" /><!--拜访组织机构名称-->
+        <result column="visitPurpose" property="visitPurpose" /><!--访问事由-->
+        <result column="baseFloor" property="baseFloor" /><!--最低楼层-->
+        <result column="visitFloor" property="visitFloor" /><!--访问楼层-->
+        <result column="visitStartTime" property="visitStartTime" /><!--访问开始时间-->
+        <result column="visitEndTime" property="visitEndTime" /><!--访问结束时间-->
+        <result column="effecNumber" property="effecNumber" /><!--访问有效次数-->
+        <result column="fromType" property="fromType" /><!--拜访来源(1 有人值守访客机、 2自助访客机、3 微信公众号、4第三方平台、5APP、6 微信小程序)-->
+        <result column="visitType" property="visitType" /><!--访问类型（1 邀请、2 预约）-->
+        <result column="visitUserTelephone" property="visitUserTelephone" /><!--被访人用户手机号码-->
+        <result column="visitUserName" property="visitUserName" /><!--被访人用户名称-->
+        <result column="remark" property="remark" /><!--备注-->
+        <result column="cancelApproval" property="cancelApproval" /><!--是否强制取消审批，默认不取消（1 取消，0 不取消）-->
+        <result column="cancelCertificate" property="cancelCertificate" /><!--是否强制取消现场认证，默认不取消（1 取消，0 不取消）-->
+        <result column="carNO" property="carNO" /><!--访客车牌号-->
+        <result column="approveType" property="approveType" /><!--审批类型:1访客 2 车位-->
+        <result column="approveStatus" property="approveStatus" /><!--审批状态:0 未审批、1 审批 2 拒绝、3 不审批-->
+        <result column="approveRemark" property="approveRemark" /><!--审批备注-->
+        <result column="reason" property="reason" /><!--黑白名单原因-->
+        <result column="visitStatus" property="visitStatus" /><!--状态（1 正常，2 需要审批，3 现场认证）-->
+        <result column="visitorType" property="visitorType" /><!--黑白名单类型（0 黑，1 白）-->
+        <result column="qrcodeKey" property="qrcodeKey" /><!--访客二维码数据-->
+        <result column="codeId" property="codeId" /><!--访客二维码 id-->
+        <result column="visitorCode" property="visitorCode" /><!--访客码-->
+        <result column="visitorUserWxId" property="visitorUserWxId" /><!--被访人用户微信id-->
+        <result column="visitorTelephone" property="visitorTelephone" /><!--访客电话号码-->
+        <result column="visitorWxId" property="visitorWxId" /><!--访客微信id-->
+        <result column="printStatus" property="printStatus" /><!--领码状态（1 未领码、2 已领码）-->
+        <result column="approveTime" property="approveTime" /><!--审批时间-->
+        <result column="printTime" property="printTime" /><!--发码时间-->
+        <result column="parkingStatus" property="parkingStatus" /><!--审批状态（0，待审批 1 预约失败，2 预约拒绝，3 预约成功）-->
+        <result column="visitorName" property="visitorName" /><!--访客姓名-->
+        <result column="createTime" property="createTime" /><!--申请时间-->
+    </resultMap>
+
+    <sql id="selectVisitorBookVo">
+        select id,visitorId,visitDepartCode,visitDepartName,visitPurpose,baseFloor,visitFloor,visitStartTime,visitEndTime,effecNumber,fromType,visitType,
+                visitUserTelephone,visitUserName,remark,cancelApproval,cancelCertificate,carNO,approveType,approveStatus,approveRemark,reason,visitStatus,
+                visitorType,qrcodeKey,codeId,visitorCode,visitorUserWxId,visitorTelephone,visitorWxId,printStatus,approveTime,printTime,parkingStatus,visitorName,createTime
+		from visitor_book
+    </sql>
+
+    <select id="selectVisitorBookByVisitorID" resultMap="VisitorBookResult">
+        <include refid="selectVisitorBookVo"/>
+        where visitorId = #{visitorId} order by id desc LIMIT 1
+    </select>
+
+    <select id="selectVisitorBookList" parameterType="VisitorBook" resultMap="VisitorBookResult">
+        <include refid="selectVisitorBookVo"/>
+        <where>
+            <if test="visitorId != null and visitorId != ''"> AND visitorId = #{visitorId}</if>
+            <if test="visitorTelephone != null and visitorTelephone != ''"> AND visitorTelephone = #{visitorTelephone}</if>
+            <if test="visitUserTelephone != null and visitUserTelephone != ''"> AND visitUserTelephone = #{visitUserTelephone}</if>
+            <if test="approveType != null and approveType != ''"> AND approveType = #{approveType}</if>
+            <if test="approveStatus != null and approveStatus != ''"> AND approveStatus = #{approveStatus}</if>
+            <if test="visitStatus != null and visitStatus != ''"> AND visitStatus = #{visitStatus}</if>
+            <if test="visitorName != null and visitorName != ''"> AND visitorName = #{visitorName}</if>
+        </where>
+    </select>
+
+    <select id="selectCountVisitorBook" parameterType="VisitorBook" resultType="Integer">
+        select count(1) from visitor_book
+        <where>
+            <if test="visitDepartCode != null and visitDepartCode != ''"> AND visitDepartCode = #{visitDepartCode}</if><!--拜访组织机构 code-->
+            <if test="visitDepartName != null and visitDepartName != ''"> AND visitDepartName = #{visitDepartName}</if><!--拜访组织机构名称-->
+            <if test="visitPurpose != null and visitPurpose != ''"> AND visitPurpose = #{visitPurpose}</if><!--访问事由-->
+            <if test="baseFloor != null and baseFloor != 0"> AND baseFloor = #{baseFloor}</if><!--最低楼层-->
+            <if test="visitFloor != null and visitFloor != ''"> AND visitFloor = #{visitFloor}</if><!--访问楼层-->
+            <if test="visitStartTime != null and visitStartTime != 0"> AND visitStartTime = #{visitStartTime}</if><!--访问开始时间-->
+            <if test="visitEndTime != null and visitEndTime != 0"> AND visitEndTime = #{visitEndTime}</if><!--访问结束时间-->
+            <if test="effecNumber != null and effecNumber != 0"> AND effecNumber = #{effecNumber}</if><!--访问有效次数-->
+            <if test="fromType != null and fromType != 0"> AND fromType = #{fromType}</if><!--拜访来源(1 有人值守访客机、 2自助访客机、3 微信公众号、4第三方平台、5APP、6 微信小程序)-->
+            <if test="visitType != null and visitType != 0"> AND visitType = #{visitType}</if><!--访问类型（1 邀请、2 预约）-->
+            <if test="visitUserTelephone != null and visitUserTelephone != ''"> AND visitUserTelephone = #{visitUserTelephone}</if><!--被访人用户手机号码-->
+            <if test="visitUserName != null and visitUserName != ''"> AND visitUserName = #{visitUserName}</if><!--被访人用户名称-->
+            <if test="remark != null and remark != ''"> AND remark = #{remark}</if><!--备注-->
+            <if test="cancelApproval != null and cancelApproval != ''"> AND cancelApproval = #{cancelApproval}</if><!--是否强制取消审批，默认不取消（1 取消，0 不取消）-->
+            <if test="cancelCertificate != null and cancelCertificate != ''"> AND cancelCertificate = #{cancelCertificate}</if><!--是否强制取消现场认证，默认不取消（1 取消，0 不取消）-->
+            <if test="carNO != null and carNO != ''"> AND carNO = #{carNO}</if><!--访客车牌号-->
+            <if test="approveType != null and approveType != ''"> AND approveType = #{approveType}</if><!--审批类型:1访客 2 车位-->
+            <if test="approveStatus != null and approveStatus != ''"> AND approveStatus = #{approveStatus}</if><!--审批状态:0 未审批、1 审批 2 拒绝、3 不审批-->
+            <if test="visitorApprove != null and visitorApprove != ''"> AND (approveStatus = '1' or approveStatus = '2')</if><!-- 查询已经审批的-->
+            <if test="approveRemark != null and approveRemark != ''"> AND approveRemark = #{approveRemark}</if><!--审批备注-->
+            <if test="reason != null and reason != ''"> AND reason = #{reason}</if><!--黑白名单原因-->
+            <if test="visitStatus != null and visitStatus != ''"> AND visitStatus = #{visitStatus}</if><!--状态（1 正常，2 需要审批，3 现场认证）-->
+            <if test="visitorType != null and visitorType != ''"> AND visitorType = #{visitorType}</if><!--黑白名单类型（0 黑，1 白）-->
+            <if test="qrcodeKey != null and qrcodeKey != ''"> AND qrcodeKey = #{qrcodeKey}</if><!--访客二维码数据-->
+            <if test="codeId != null and codeId != ''"> AND codeId = #{codeId}</if><!--访客二维码 id-->
+            <if test="visitorCode != null and visitorCode != ''"> AND visitorCode = #{visitorCode}</if><!--访客码-->
+            <if test="visitorUserWxId != null and visitorUserWxId != ''"> AND visitorUserWxId = #{visitorUserWxId}</if><!--访客码-->
+            <if test="visitorTelephone != null and visitorTelephone != ''"> AND visitorTelephone = #{visitorTelephone}</if><!--访客电话号码-->
+            <if test="visitorWxId != null and visitorWxId != ''"> AND visitorWxId = #{visitorWxId}</if><!--访客微信id-->
+            <if test="printStatus != null and printStatus != ''"> AND printStatus = #{printStatus}</if><!--领码状态（1 未领码、2 已领码）-->
+            <if test="parkingStatus != null and parkingStatus != ''"> AND parkingStatus = #{parkingStatus}</if><!--审批状态（0，待审批 1 预约失败，2 预约拒绝，3 预约成功）-->
+            <if test="visitorName != null and visitorName != ''"> AND visitorName = #{visitorName}</if><!--访客姓名-->
+        </where>
+    </select>
+
+    <select id="selectVisitorBookPage" parameterType="map" resultMap="VisitorBookResult">
+        <include refid="selectVisitorBookVo"/>
+        <where>
+            <if test="visitDepartCode != null and visitDepartCode != ''"> AND visitDepartCode = #{visitDepartCode}</if><!--拜访组织机构 code-->
+            <if test="visitDepartName != null and visitDepartName != ''"> AND visitDepartName = #{visitDepartName}</if><!--拜访组织机构名称-->
+            <if test="visitPurpose != null and visitPurpose != ''"> AND visitPurpose = #{visitPurpose}</if><!--访问事由-->
+            <if test="baseFloor != null and baseFloor != 0"> AND baseFloor = #{baseFloor}</if><!--最低楼层-->
+            <if test="visitFloor != null and visitFloor != ''"> AND visitFloor = #{visitFloor}</if><!--访问楼层-->
+            <if test="visitStartTime != null and visitStartTime != 0"> AND visitStartTime = #{visitStartTime}</if><!--访问开始时间-->
+            <if test="visitEndTime != null and visitEndTime != 0"> AND visitEndTime = #{visitEndTime}</if><!--访问结束时间-->
+            <if test="effecNumber != null and effecNumber != 0"> AND effecNumber = #{effecNumber}</if><!--访问有效次数-->
+            <if test="fromType != null and fromType != 0"> AND fromType = #{fromType}</if><!--拜访来源(1 有人值守访客机、 2自助访客机、3 微信公众号、4第三方平台、5APP、6 微信小程序)-->
+            <if test="visitType != null and visitType != 0"> AND visitType = #{visitType}</if><!--访问类型（1 邀请、2 预约）-->
+            <if test="visitUserTelephone != null and visitUserTelephone != ''"> AND visitUserTelephone = #{visitUserTelephone}</if><!--被访人用户手机号码-->
+            <if test="visitUserName != null and visitUserName != ''"> AND visitUserName = #{visitUserName}</if><!--被访人用户名称-->
+            <if test="remark != null and remark != ''"> AND remark = #{remark}</if><!--备注-->
+            <if test="cancelApproval != null and cancelApproval != ''"> AND cancelApproval = #{cancelApproval}</if><!--是否强制取消审批，默认不取消（1 取消，0 不取消）-->
+            <if test="cancelCertificate != null and cancelCertificate != ''"> AND cancelCertificate = #{cancelCertificate}</if><!--是否强制取消现场认证，默认不取消（1 取消，0 不取消）-->
+            <if test="carNO != null and carNO != ''"> AND carNO = #{carNO}</if><!--访客车牌号-->
+            <if test="approveType != null and approveType != ''"> AND approveType = #{approveType}</if><!--审批类型:1访客 2 车位-->
+            <if test="approveStatus != null and approveStatus != ''"> AND approveStatus = #{approveStatus}</if><!--审批状态:0 未审批、1 审批 2 拒绝、3 不审批-->
+            <if test="visitorApprove != null and visitorApprove != ''"> AND (approveStatus = '1' or approveStatus = '2')</if><!-- 查询已经审批的-->
+            <if test="approveRemark != null and approveRemark != ''"> AND approveRemark = #{approveRemark}</if><!--审批备注-->
+            <if test="reason != null and reason != ''"> AND reason = #{reason}</if><!--黑白名单原因-->
+            <if test="visitStatus != null and visitStatus != ''"> AND visitStatus = #{visitStatus}</if><!--状态（1 正常，2 需要审批，3 现场认证）-->
+            <if test="visitorType != null and visitorType != ''"> AND visitorType = #{visitorType}</if><!--黑白名单类型（0 黑，1 白）-->
+            <if test="qrcodeKey != null and qrcodeKey != ''"> AND qrcodeKey = #{qrcodeKey}</if><!--访客二维码数据-->
+            <if test="codeId != null and codeId != ''"> AND codeId = #{codeId}</if><!--访客二维码 id-->
+            <if test="visitorCode != null and visitorCode != ''"> AND visitorCode = #{visitorCode}</if><!--访客码-->
+            <if test="visitorUserWxId != null and visitorUserWxId != ''"> AND visitorUserWxId = #{visitorUserWxId}</if><!--访客码-->
+            <if test="visitorTelephone != null and visitorTelephone != ''"> AND visitorTelephone = #{visitorTelephone}</if><!--访客电话号码-->
+            <if test="visitorWxId != null and visitorWxId != ''"> AND visitorWxId = #{visitorWxId}</if><!--访客微信id-->
+            <if test="printStatus != null and printStatus != ''"> AND printStatus = #{printStatus}</if><!--领码状态（1 未领码、2 已领码）-->
+            <if test="parkingStatus != null and parkingStatus != ''"> AND parkingStatus = #{parkingStatus}</if><!--审批状态（0，待审批 1 预约失败，2 预约拒绝，3 预约成功）-->
+            <if test="visitorName != null and visitorName != ''"> AND visitorName = #{visitorName}</if><!--访客姓名-->
+        </where>
+        order by id desc
+        LIMIT #{currIndex} , #{pageSize}
+    </select>
+
+    <insert id="insertVisitorBook" parameterType="VisitorBook">
+        insert into visitor_book(visitorId,visitDepartCode,visitDepartName,visitPurpose,baseFloor,visitFloor,visitStartTime,visitEndTime,
+                effecNumber,fromType,visitType,visitUserTelephone,visitUserName,remark,cancelApproval,cancelCertificate,
+                carNO,approveType,approveStatus,approveRemark,reason,visitStatus,visitorType,qrcodeKey,codeId,
+                visitorCode,visitorUserWxId,visitorTelephone,visitorWxId,printStatus,approveTime,printTime,parkingStatus,visitorName,createTime)
+
+        values(#{visitorId},#{visitDepartCode},#{visitDepartName},#{visitPurpose},#{baseFloor},#{visitFloor},#{visitStartTime},#{visitEndTime},
+                #{effecNumber},#{fromType},#{visitType},#{visitUserTelephone},#{visitUserName},#{remark},#{cancelApproval},#{cancelCertificate},
+                #{carNO},#{approveType},#{approveStatus},#{approveRemark},#{reason},#{visitStatus},#{visitorType},#{qrcodeKey},#{codeId},
+                #{visitorCode},#{visitorUserWxId},#{visitorTelephone},#{visitorWxId},#{printStatus},#{approveTime},#{printTime},#{parkingStatus},#{visitorName},#{createTime})
+    </insert>
+
+    <update id="updateVisitorBook" parameterType="VisitorBook">
+        update visitor_book
+        <set>
+            <if test="visitDepartCode != null and visitDepartCode != ''">visitDepartCode = #{visitDepartCode},</if><!--拜访组织机构 code-->
+            <if test="visitDepartName != null and visitDepartName != ''">visitDepartName = #{visitDepartName},</if><!--拜访组织机构名称-->
+            <if test="visitPurpose != null and visitPurpose != ''">visitPurpose = #{visitPurpose},</if><!--访问事由-->
+            <if test="baseFloor != null and baseFloor != 0">baseFloor = #{baseFloor},</if><!--最低楼层-->
+            <if test="visitFloor != null and visitFloor != ''">visitFloor = #{visitFloor},</if><!--访问楼层-->
+            <if test="visitStartTime != null and visitStartTime != 0">visitStartTime = #{visitStartTime},</if><!--访问开始时间-->
+            <if test="visitEndTime != null and visitEndTime != 0">visitEndTime = #{visitEndTime},</if><!--访问结束时间-->
+            <if test="effecNumber != null and effecNumber != 0">effecNumber = #{effecNumber},</if><!--访问有效次数-->
+            <if test="fromType != null and fromType != 0">fromType = #{fromType},</if><!--拜访来源(1 有人值守访客机、 2自助访客机、3 微信公众号、4第三方平台、5APP、6 微信小程序)-->
+            <if test="visitType != null and visitType != 0">visitType = #{visitType},</if><!--访问类createTime型（1 邀请、2 预约）-->
+            <if test="visitUserTelephone != null and visitUserTelephone != ''">visitUserTelephone = #{visitUserTelephone},</if><!--被访人用户手机号码-->
+            <if test="visitUserName != null and visitUserName != ''">visitUserName = #{visitUserName},</if><!--被访人用户名称-->
+            <if test="remark != null and remark != ''">remark = #{remark},</if><!--备注-->
+            <if test="cancelApproval != null and cancelApproval != ''">cancelApproval = #{cancelApproval},</if><!--是否强制取消审批，默认不取消（1 取消，0 不取消）-->
+            <if test="cancelCertificate != null and cancelCertificate != ''">cancelCertificate = #{cancelCertificate},</if><!--是否强制取消现场认证，默认不取消（1 取消，0 不取消）-->
+            <if test="carNO != null and carNO != ''">carNO = #{carNO},</if><!--访客车牌号-->
+            <if test="approveType != null and approveType != ''">approveType = #{approveType},</if><!--审批类型:1访客 2 车位-->
+            <if test="approveStatus != null and approveStatus != ''">approveStatus = #{approveStatus},</if><!--审批状态:0 未审批、1 审批 2 拒绝、3 不审批-->
+            <if test="approveRemark != null and approveRemark != ''">approveRemark = #{approveRemark},</if><!--审批备注-->
+            <if test="reason != null and reason != ''">reason = #{reason},</if><!--黑白名单原因-->
+            <if test="visitStatus != null and visitStatus != ''">visitStatus = #{visitStatus},</if><!--状态（1 正常，2 需要审批，3 现场认证）-->
+            <if test="visitorType != null and visitorType != ''">visitorType = #{visitorType},</if><!--黑白名单类型（0 黑，1 白）-->
+            <if test="qrcodeKey != null and qrcodeKey != ''">qrcodeKey = #{qrcodeKey},</if><!--访客二维码数据-->
+            <if test="codeId != null and codeId != ''">codeId = #{codeId},</if><!--访客二维码 id-->
+            <if test="visitorCode != null and visitorCode != ''">visitorCode = #{visitorCode},</if><!--访客码-->
+            <if test="visitorUserWxId != null and visitorUserWxId != ''">visitorUserWxId = #{visitorUserWxId},</if><!--访客码-->
+            <if test="visitorTelephone != null and visitorTelephone != ''">visitorTelephone = #{visitorTelephone},</if><!--访客电话号码-->
+            <if test="visitorWxId != null and visitorWxId != ''">visitorWxId = #{visitorWxId},</if><!--访客微信id-->
+            <if test="printStatus != null and printStatus != ''">printStatus = #{printStatus},</if><!--领码状态（1 未领码、2 已领码）-->
+            <if test="approveTime != null">approveTime = #{approveTime},</if><!--审批时间-->
+            <if test="printTime != null">printTime = #{printTime},</if><!--发码时间-->
+            <if test="parkingStatus != null and parkingStatus != ''">parkingStatus = #{parkingStatus},</if><!--审批状态（0，待审批 1 预约失败，2 预约拒绝，3 预约成功）-->
+            <if test="visitorName != null and visitorName != ''">visitorName = #{visitorName},</if><!--访客姓名-->
+            <if test="createTime != null">createTime = #{createTime},</if><!--访客姓名-->
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

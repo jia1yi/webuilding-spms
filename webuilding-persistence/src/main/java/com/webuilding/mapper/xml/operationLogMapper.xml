@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webuilding.mapper.OperationLogMapper">
+
+    <!-- 操作日志映射结果 -->
+    <resultMap id="OperationLogResult" type="com.webuilding.entity.OperationLog">
+        <id column="operation_log_id" property="operationLogId" />
+        <result column="log_description" property="logDescription" />
+        <result column="action_args" property="actionArgs" />
+        <result column="user_no" property="userNo" />
+        <result column="class_name" property="className" />
+        <result column="method_name" property="methodName" />
+        <result column="ip" property="ip" />
+        <result column="create_time" property="createTime" />
+        <result column="succeed" property="succeed" />
+        <result column="message" property="message" />
+        <result column="model_name" property="modelName" />
+        <result column="action" property="action" />
+    </resultMap>
+
+    <sql id="selectOperationLogVo">
+        select operation_log_id,log_description, action_args, user_no, class_name, method_name, ip, create_time, succeed, message, model_name ,action
+		from operation_log
+    </sql>
+
+    <select id="selectLogList" parameterType="OperationLog" resultMap="OperationLogResult">
+        <include refid="selectOperationLogVo"/>
+        <where>
+            <if test="logDescription != null and logDescription != ''"> AND log_description like concat('%', #{logDescription}, '%')</if>
+            <if test="actionArgs != null and actionArgs != ''"> AND action_args like concat('%', #{actionArgs}, '%')</if>
+            <if test="userNo != null and userNo != ''"> AND user_no like concat('%', #{userNo}, '%')</if>
+            <if test="className != null and className != ''"> AND class_name = #{className}</if>
+            <if test="methodName != null and methodName != ''"> AND method_name = #{methodName}</if>
+            <if test="ip != null and ip != ''"> AND ip = #{ip}</if>
+            <if test="createTime != null and createTime != ''"> AND create_time =  #{createTime}</if>
+            <if test="succeed != null and succeed != ''"> AND succeed = #{succeed}</if>
+            <if test="message != null and message != ''"> AND message like concat('%', #{message}, '%')</if>
+            <if test="modelName != null and modelName != ''"> AND model_name = #{modelName}</if>
+            <if test="action != null and action != ''">AND action =  #{action}</if>
+        </where>
+    </select>
+
+    <insert id="insertOperationLog" parameterType="OperationLog">
+        insert into operation_log (log_description,action_args,user_no,class_name,method_name,ip,create_time,succeed,message,model_name,action)
+        values(#{logDescription},#{actionArgs},#{userNo},#{className},#{methodName},#{ip},#{createTime},#{succeed},#{message},#{modelName},#{action})
+    </insert>
+
+    <delete id="deleteLogByIds" parameterType="String">
+        delete from operation_log where operation_log_id in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+
+</mapper>

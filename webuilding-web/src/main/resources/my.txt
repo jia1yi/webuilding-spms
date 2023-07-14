@@ -1,0 +1,4 @@
+Application name: ${project.name}
+Application Version: ${project.version}
+Application copyrightYear: ${project.copyrightYear}
+Spring Boot Version: ${spring-boot.version}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webuilding.mapper.LoginUserMapper">
+
+    <!-- 登录用户映射结果 -->
+    <resultMap id="LoginUserResult" type="com.webuilding.entity.LoginUser">
+        <id column="telephone" property="telephone" />
+        <result column="wechatId" property="wechatId" />
+        <result column="last_login_time" property="last_login_time" />
+    </resultMap>
+
+    <sql id="selectLoginUserVo">
+        select telephone,wechatId,last_login_time
+		from login_user
+    </sql>
+
+    <select id="selectLoginUserList" parameterType="LoginUser" resultMap="LoginUserResult">
+        <include refid="selectLoginUserVo"/>
+        <where>
+            <if test="telephone != null and telephone != ''"> AND telephone like concat('%', #{telephone}, '%')</if>
+            <if test="wechatId != null and wechatId != ''"> AND wechatId = #{wechatId}</if>
+        </where>
+    </select>
+
+    <select id="selectLoginUserByTel" resultMap="LoginUserResult">
+        <include refid="selectLoginUserVo"/>
+        where telephone = #{telephone}
+    </select>
+
+    <insert id="insertLoginUser" parameterType="LoginUser">
+        insert into login_user(telephone,wechatId,last_login_time)
+        values(#{telephone},#{wechatId},sysdate())
+    </insert>
+
+    <update id="updateLoginUser" parameterType="LoginUser">
+        update login_user
+        <set>
+            <if test="wechatId != null and wechatId != ''">wechatId = #{wechatId},</if>
+            last_login_time = sysdate()
+        </set>
+        where telephone = #{telephone}
+    </update>
+
+</mapper>

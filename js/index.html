@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门禁</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="plugins/element-plus/css/index.css">
+    <script src="plugins/qs/qs.js"></script>
+    <script src="plugins/vue/vue.min.js"></script>
+    <script src="plugins/axios/axios.min.js"></script>
+    <script src="plugins/element-plus/js/index.full.js"></script>
+    <script src="plugins/element-plus/js/es.js"></script>
+    <script src="plugins/jsencrypt.min.js"></script>
+    <script src="plugins/base64.js"></script>
+    <script src="plugins/JSEncryptRSAKey.js"></script>
+    <script src="plugins/element-plus/js/zh-cn.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/aes.min.js"></script> 
+
+    <style>
+        /* transparent    #1d202a*/
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            /* background-color: #F5F5F5; */
+
+            margin: 0 auto;
+        }
+
+        .el-button.is-plain:focus,
+        .el-button.is-plain:hover {
+            border-color: #E65653;
+            color: #E65653;
+        }
+
+        .el-pagination.is-background .el-pager li:not(.disabled):hover {
+            color: #E65653;
+        }
+
+        #app {
+            padding: 20px 55px 20px 50px;
+        }
+
+        .headers {
+            padding: 13px 20px;
+            border-bottom: 1px solid #f4f4f4;
+            padding-bottom: 20px;
+            background: #fff;
+            color: #444;
+            font-size: 18px;
+        }
+
+        .headers h3 {
+            position: relative;
+        }
+
+        .queryForm {
+            padding: 15px 10px;
+            background: #fff;
+        }
+
+        .queryForm .el-form-item,
+        .el-form-item--mini.el-form-item,
+        .el-form-item--small.el-form-item {
+            margin-bottom: 0;
+        }
+
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+
+        .navMenu {
+            width: 100%;
+            padding: 15px 0;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .navMenu .list {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .navMenu a {
+            color: #909399;
+            padding: 0 20px;
+        }
+
+        .navMenu a.active {
+            color: #303133;
+            border-bottom: 2px solid #409eff;
+            padding-bottom: 13px;
+        }
+
+        .el-pagination {
+            background: #312F32;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .el-pagination.is-background .el-pager li:not(.disabled).active {
+            background: #E65653;
+            border-color: #E65653;
+            color: #fff;
+        }
+
+        #app .btns {
+            background: rgb(230, 86, 83);
+            color: #fff;
+            border-color: rgb(230, 86, 83)
+        }
+
+        /* 暗色系列 */
+        body {
+            background: rgba(0, 0, 0, 0);
+            /* background-color: red; */
+        }
+
+        #app .headers {
+            background: #312f32;
+            color: #fff;
+        }
+
+        #app .queryForm {
+            background: transparent;
+            padding: 20px;
+            color: #fff;
+        }
+
+        #app .queryForm .el-form-item__label,
+        .el-date-editor .el-range-input,
+        .el-range-editor--small .el-range-separator,
+        .el-pagination__jump,
+        .el-pagination__total {
+            color: rgb(255, 255, 255);
+        }
+
+        #app .queryForm .el-input__inner,
+        .el-date-editor .el-range-input {
+            background: transparent;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .el-date-editor .el-range-input {
+            margin-bottom: 0;
+        }
+
+        #app .btns,
+        .el-pagination.is-background .el-pager li:not(.disabled).active {
+            background: #312f32;
+            color: #fff;
+            border-color: #312f32;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div v-cloak>
+            <div class="clear headers">
+                <h3 class="pull-left">门禁记录</h3>
+                <img src="images/fa-export.png" title="导出" @click="toExecl" style="margin-top:7px;" class="pull-right"
+                    alt="">
+            
+
+		</div>
+            <div>密文：{{msg}}</div>
+            <div>密钥密文：{{key}}</div>
+            <div>密钥明文：{{key1}}</div>
+            <div>明文：{{data}}</div>
+        </div>
+</div>
+</body>
+<script src="js/config.js"></script>
+<script src="js/index.js"></script>
+
+
+<script>
+    /*    var  current = new Date()
+       var  names = current.getTime()  + 24 * 60 * 60 * 1000
+       var oneDay  = current.getDate()
+       console.log("🚀 ~ file: index.html ~ line 151 ~ oneDay", oneDay)
+       var  newCurr = new Date(names)
+       var twoDay = newCurr.getDate()
+       console.log("🚀 ~ file: index.html
+        ~ line 154 ~ twoDay", twoDay) */
+
+</script>
+
+</html>
